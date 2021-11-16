@@ -17,6 +17,8 @@ class BannerAdapter extends RecyclerView.Adapter<ImageViewHolder> {
 
     private List<String> paths = new ArrayList<>();
 
+    private int needPage = 2;
+
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -28,12 +30,29 @@ class BannerAdapter extends RecyclerView.Adapter<ImageViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        Glide.with(holder.mImageView.getContext()).load(paths.get(position)).into(holder.mImageView);
+        System.out.println("  onBindViewHolder  " + position + "  RealPosition  " + getRealPosition(position) );
+        Glide.with(holder.mImageView.getContext()).load(paths.get(getRealPosition(position))).into(holder.mImageView);
+        holder.num.setText("position :  " + getRealPosition(position));
     }
 
     @Override
     public int getItemCount() {
+        return paths.size() + needPage;
+    }
+
+    int getRealCount() {
         return paths.size();
+    }
+
+    private int getRealPosition(int position) {
+        int realPosition = 0;
+        if (getRealCount() > 1) {
+            realPosition = (position - 1) % getRealCount();
+        }
+        if (realPosition < 0) {
+            realPosition += getRealCount();
+        }
+        return realPosition;
     }
 
     public void setList(List<String> imageList) {
